@@ -24,6 +24,8 @@
   --font-weight-regular: 400;
   --font-weight-semi-bold:600 ;
   --font-weight-bold: 700;
+  --line-height-high: 30px;
+
 }
 
 /* debug */
@@ -144,8 +146,17 @@ small {
   margin-bottom: 10px;
 }
 
+.ml-auto {
+  margin-left: auto;
+}
+
+
 .mr-5 {
   margin-right: 5px;
+}
+
+.mr-auto {
+  margin-right: auto;
 }
 
 .mr-10 {
@@ -174,8 +185,16 @@ small {
   padding: 20px;
 }
 
+.pb-10 {
+  padding-bottom: 10px;
+}
+
 .pb-20 {
   padding-bottom: 20px;
+}
+
+.pb-30 {
+  padding-bottom: 30px;
 }
 
 .py-20 {
@@ -361,4 +380,21 @@ footer {
 
 .rating-down {
   color: var(--warning);
+}
+
+.separator {
+  border-bottom: 1px solid #e2eaef;
+  margin : 30px 0 ;
+}
+
+/*flash*/
+
+.flash {
+  padding : 20px;
+  text-align: center;
+  color: #fff;
+}
+
+.flash-success {
+  background-color: var(--success);
 }

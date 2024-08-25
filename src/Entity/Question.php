@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\QuestionRepository;
@@ -17,7 +19,7 @@ class Question
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message:'Veuillez renseigner un titre')]
-    #[Assert\Length(min:100, minMessage:'Veuillez noter votre question', max: 255, maxMessage:'Le titre est trop long')]
+    #[Assert\Length(min:20, minMessage:'Veuillez détailler votre titre', max: 255, maxMessage:'Le titre est trop long')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -33,6 +35,17 @@ class Question
 
     #[ORM\Column]
     private ?int $nbreOfResponse = null;
+
+    /**
+     * @var Collection<int, Comment>
+     */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'question', orphanRemoval: true)]
+    private Collection $comments;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -95,6 +108,36 @@ class Question
     public function setNbreOfResponse(int $nbreOfResponse): static
     {
         $this->nbreOfResponse = $nbreOfResponse;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setQuestion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getQuestion() === $this) {
+                $comment->setQuestion(null);
+            }
+        }
 
         return $this;
     }

@@ -4,11 +4,14 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <script defer src="{{ asset('js/index.js') }}"></script>
-        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+        {% block styleSheets %}
+            <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+        {% endblock %}
+       
     </head>
     <body class="d-flex  flex-column">
         {{ include('partials/_header.html.twig') }}
@@ -20,6 +23,13 @@
                     </div>
                 </div>
             </div>
+            {% for cat, list in app.flashes %}
+                {% for message in list %}
+                     <div class="flash flash-{{ cat }}">{{ message }}</div> 
+                {% endfor %} 
+            {% endfor %}
         {{ include('partials/_footer.html.twig') }}   
     </body>
 </html>
+
+{# Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas, ducimus nemo libero quae suscipit ipsam, quam ab culpa ipsum deleniti sapiente consequatur molestias accusantium esse? Neque necessitatibus iusto omnis quas. #}
