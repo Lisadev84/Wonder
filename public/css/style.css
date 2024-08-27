@@ -406,3 +406,10 @@ footer {
   line-height: var(--line-height-high);
   white-space: pre-wrap;
 }
+
+/*user profile*/
+
+.profile-picture {
+  width: 150px;
+  border-radius: var(--border-radius)
+}
