@@ -271,17 +271,14 @@ small {
   color: var(--color-dark) ;
 }
 
-.form-row input {
-  height: 20px;
-}
-
-.form-row-input, textarea {
+.form-row input, textarea {
   border: 0;
-  border-radius:var(--border-radius) ;
+  border-radius:var(--border-radius);
   padding: 10px 15px;
   background-color: var(--gray-light);
   font-family: var(--font-family);
 }
+
 .form-row textarea {
   min-height: 150px;
 }
@@ -295,6 +292,10 @@ small {
 .avatar {
   width: 25px;
   border-radius: 50%;
+}
+
+.avatar-lg {
+  width: 50px;
 }
 
 .clickable {
@@ -397,4 +398,11 @@ footer {
 
 .flash-success {
   background-color: var(--success);
+}
+
+/*questions text*/
+
+.question-text, .question-response-text {
+  line-height: var(--line-height-high);
+  white-space: pre-wrap;
 }
