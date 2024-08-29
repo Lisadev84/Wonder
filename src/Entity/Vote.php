@@ -67,6 +67,8 @@ class Vote
         return $this;
     }
 
+
+
     public function isLiked(): ?bool
     {
         return $this->isLiked;
