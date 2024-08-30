@@ -26,6 +26,7 @@ class Vote
     #[ORM\Column]
     private ?bool $isLiked = null;
 
+
     public function getId(): ?int
     {
         return $this->id;
@@ -69,12 +70,12 @@ class Vote
 
 
 
-    public function isLiked(): ?bool
+    public function getIsLiked(): ?bool
     {
         return $this->isLiked;
     }
 
-    public function setLiked(bool $isLiked): static
+    public function setIsLiked(bool $isLiked): static
     {
         $this->isLiked = $isLiked;
 

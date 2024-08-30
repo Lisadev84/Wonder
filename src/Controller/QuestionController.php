@@ -8,6 +8,7 @@ use App\Entity\Question;
 use App\Form\CommentType;
 use App\Form\QuestionType;
 use App\Repository\VoteRepository;
+use App\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,8 +46,9 @@ class QuestionController extends AbstractController
     }
 
     #[Route('/question/{id}', name: 'question_show')]
-    public function showQuestion(Request $request, Question $question, EntityManagerInterface $em): Response
+    public function showQuestion(Request $request, QuestionRepository $questionRepo, int $id, EntityManagerInterface $em): Response
     {
+        $question = $questionRepo->getQuestionWithCommentsAndAuthors($id);
         $options = [
             'question' => $question
         ];
@@ -84,11 +86,11 @@ class QuestionController extends AbstractController
               'question'=> $question  
             ]);
             if ($vote) {
-                if (($vote->IsLiked() && $score > 0) || (!$vote->IsLiked() && $score < 0)) {
+                if (($vote->getIsLiked() && $score > 0) || (!$vote->getIsLiked() && $score < 0)) {
                     $em->remove($vote);
                     $question->setRating($question->getRating() + ($score > 0 ? -1 : 1 ));
                 } else {
-                    $vote-> setLiked(!$vote->isLiked()); 
+                    $vote-> setIsLiked(!$vote->getIsLiked()); 
                     $question->setRating($question->getRating() + ($score > 0 ? 2 : -2 ));
                 }
 
@@ -96,7 +98,7 @@ class QuestionController extends AbstractController
                 $vote = new Vote();
                 $vote->setAuthor($user);
                 $vote->setQuestion($question);
-                $vote->setLiked($score > 0 ? true : false); 
+                $vote->setIsLiked($score > 0 ? true : false); 
                 $question->setRating($question->getRating() + $score);
                 $em->persist($vote); 
             }
@@ -116,14 +118,13 @@ class QuestionController extends AbstractController
             $vote = $voteRepo->findOneBy([
               'author' => $user,
               'question'=> $comment                
- 
             ]);
             if ($vote) {
-                if (($vote->IsLiked() && $score > 0) || (!$vote->IsLiked() && $score < 0)) {
+                if (($vote->getIsLiked() && $score > 0) || (!$vote->getIsLiked() && $score < 0)) {
                     $em->remove($vote);
                     $comment->setRating($comment->getRating() + ($score > 0 ? -1 : 1 ));
                 } else {
-                    $vote-> setLiked(!$vote->isLiked()); 
+                    $vote-> setLiked(!$vote->getIsLiked()); 
                     $comment->setRating($comment->getRating() + ($score > 0 ? 2 : -2 ));
                 }
 
@@ -131,7 +132,7 @@ class QuestionController extends AbstractController
                 $vote = new Vote();
                 $vote->setAuthor($user);
                 $vote->setComment($comment);
-                $vote->setLiked($score > 0 ? true : false); 
+                $vote->setIsLiked($score > 0 ? true : false); 
                 $comment->setRating($comment->getRating() + $score);
                 $em->persist($vote); 
             }

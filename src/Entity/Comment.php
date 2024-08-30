@@ -19,7 +19,7 @@ class Comment
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message:'Veuillez détailler votre réponse')]
-    #[Assert\Length(min:100, minMessage:'Votre réponse est trop courte')]
+    #[Assert\Length(min:50, minMessage:'Votre réponse est trop courte')]
     private ?string $content = null;
 
     #[ORM\Column]

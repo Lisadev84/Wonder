@@ -24,7 +24,7 @@ class Question
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message:'Veuillez détailler votre question')]
-    #[Assert\Length(min:100, minMessage:'Veuillez détailler votre question')]
+    #[Assert\Length(min:100, minMessage:'Veuillez détailler davantage votre question')]
     private ?string $content = null;
 
     #[ORM\Column]
