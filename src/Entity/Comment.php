@@ -19,7 +19,6 @@ class Comment
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message:'Veuillez détailler votre réponse')]
-    #[Assert\Length(min:50, minMessage:'Votre réponse est trop courte')]
     private ?string $content = null;
 
     #[ORM\Column]
@@ -57,8 +56,14 @@ class Comment
         return $this->content;
     }
 
+    /**
+     * content must be at least 50 characters long
+     */
     public function setContent(string $content): static
     {
+      if (strlen($content) < 50) {
+           throw new \LengthException('Votre contenu est trop court, 50 caractères minimum');
+      }
         $this->content = $content;
 
         return $this;

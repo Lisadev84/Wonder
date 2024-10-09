@@ -10,6 +10,7 @@ use App\Form\QuestionType;
 use App\Repository\VoteRepository;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -53,21 +54,26 @@ class QuestionController extends AbstractController
             'question' => $question
         ];
         $user = $this->getUser();
+
         if ($user) {
             $comment = new Comment();
             $commentForm = $this->createForm(CommentType::class, $comment);
-            $commentForm->handleRequest($request);
-    
-            if ($commentForm->isSubmitted() && $commentForm->isValid()){
-                $comment->setCreatedAt(new \DateTimeImmutable());
-                $comment->setRating(0);
-                $comment->setQuestion($question);
-                $comment->setAuthor($user);
-                $question->setNbreOfResponse($question->getNbreOfResponse() + 1);
-                $em->persist($comment);
-                $em->flush();
-                $this->addFlash('success', 'Votre réponse a bien été ajoutée');
-                return $this->redirect($request->getUri());
+            try {
+                $commentForm->handleRequest($request);
+                    if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+                        $comment->setCreatedAt(new \DateTimeImmutable());
+                        $comment->setRating(0);
+                        $comment->setQuestion($question);
+                        $comment->setAuthor($user);
+                        $question->setNbreOfResponse($question->getNbreOfResponse() + 1);
+                        $em->persist($comment);
+                        $em->flush();
+                        $this->addFlash('success', 'Votre réponse a bien été ajoutée');
+                        return $this->redirect($request->getUri());
+                    }
+                 } catch (\Exception $e) {
+
+                     $commentForm->get("content")->addError(new FormError($e->getMessage()));
             }
             $options['form'] = $commentForm->createView();
         }

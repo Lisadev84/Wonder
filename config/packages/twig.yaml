@@ -1,7 +1,9 @@
 twig:
     file_name_pattern: '*.twig'
     form_themes: ['base_form_theme.html.twig']
-
+    paths:
+        '%kernel.project_dir%/emails/CSS': email_css
+        '%kernel.project_dir%/emails/templates': email_templates
 when@test:
     twig:
         strict_variables: true

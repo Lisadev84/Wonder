@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
@@ -23,7 +25,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/signup', name: 'signup')]
-    public function signup(UserAuthenticatorInterface $userAuthenticator, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher)
+    public function signup(UserAuthenticatorInterface $userAuthenticator, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer)
     {
         $user = new User();
         $userForm = $this->createForm(UserType::class, $user);
@@ -34,7 +36,14 @@ class SecurityController extends AbstractController
             $em->persist($user);
             $em->flush();
             $this->addFlash('success', 'Bienvenue sur Wonder !');
-
+            $email = new TemplatedEmail();
+            $email->to($user->getEmail())
+                  ->subject('Bienvenue sur Wonder!')
+                  ->htmlTemplate('@email_templates/welcome.html.twig')
+                  ->context([
+                      'username' => $user->getFirstName()
+                  ]);
+            $mailer->send($email);
             return $userAuthenticator->authenticateUser($user, $this->authenticator, $request);
         }
         return $this->render('security/signup.html.twig', ['form' => $userForm->createView()]);
@@ -49,7 +58,10 @@ class SecurityController extends AbstractController
         }
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+        return $this->render('security/login.html.twig', [
+            'last_username' => $lastUsername,
+             'error' => $error
+        ]);
     }
 
     #[Route("/logout", name: "logout")]
